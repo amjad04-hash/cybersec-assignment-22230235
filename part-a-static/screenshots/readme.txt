@@ -1,0 +1,1 @@
+Screenshots for static analysis
