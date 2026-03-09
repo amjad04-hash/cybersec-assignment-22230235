@@ -1,0 +1,28 @@
+# Custom IDS Rules for Malware Network Traffic Detection
+# Assignment: Malware Network Analysis
+# Tool: Snort IDS
+
+# ----------------------------------------------------
+# Rule 1: Detect DNS queries leaving the internal network
+# ----------------------------------------------------
+alert udp $HOME_NET any -> $EXTERNAL_NET 53 (msg:"Malware DNS Query Detected"; sid:1000001; rev:1;)
+
+# ----------------------------------------------------
+# Rule 2: Detect outbound SMB connections
+# ----------------------------------------------------
+alert tcp $HOME_NET any -> $EXTERNAL_NET 445 (msg:"Outbound SMB Connection Attempt"; sid:1000002; rev:1;)
+
+# ----------------------------------------------------
+# Rule 3: Detect possible HTTP malware beaconing
+# ----------------------------------------------------
+alert tcp $HOME_NET any -> $EXTERNAL_NET 80 (msg:"Suspicious HTTP Outbound Traffic"; sid:1000003; rev:1;)
+
+# ----------------------------------------------------
+# Rule 4: Detect possible port scanning behavior
+# ----------------------------------------------------
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"Possible TCP Port Scan Detected"; flags:S; threshold:type threshold, track by_src, count 10, seconds 60; sid:1000004; rev:1;)
+
+# ----------------------------------------------------
+# Rule 5: Detect excessive DNS requests (possible DNS tunneling)
+# ----------------------------------------------------
+alert udp $HOME_NET any -> $EXTERNAL_NET 53 (msg:"Possible DNS Tunneling Activity"; threshold:type threshold, track by_src, count 20, seconds 60; sid:1000005; rev:1;)
